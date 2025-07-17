@@ -148,12 +148,14 @@ Discarded input sections
                 0x00000000       0x36 ./Core/Src/max30102_driver.o
  .text.WriteRegister
                 0x00000000       0x36 ./Core/Src/max30102_driver.o
- .debug_info    0x00000000      0x722 ./Core/Src/max30102_driver.o
- .debug_abbrev  0x00000000      0x16e ./Core/Src/max30102_driver.o
+ .text.SetConfiguration
+                0x00000000      0x124 ./Core/Src/max30102_driver.o
+ .debug_info    0x00000000      0x8b6 ./Core/Src/max30102_driver.o
+ .debug_abbrev  0x00000000      0x182 ./Core/Src/max30102_driver.o
  .debug_aranges
-                0x00000000       0x28 ./Core/Src/max30102_driver.o
+                0x00000000       0x30 ./Core/Src/max30102_driver.o
  .debug_rnglists
-                0x00000000       0x19 ./Core/Src/max30102_driver.o
+                0x00000000       0x20 ./Core/Src/max30102_driver.o
  .debug_macro   0x00000000      0x1d8 ./Core/Src/max30102_driver.o
  .debug_macro   0x00000000      0xad8 ./Core/Src/max30102_driver.o
  .debug_macro   0x00000000      0x295 ./Core/Src/max30102_driver.o
@@ -195,10 +197,10 @@ Discarded input sections
  .debug_macro   0x00000000       0x89 ./Core/Src/max30102_driver.o
  .debug_macro   0x00000000      0x126 ./Core/Src/max30102_driver.o
  .debug_macro   0x00000000       0x76 ./Core/Src/max30102_driver.o
- .debug_line    0x00000000      0x74c ./Core/Src/max30102_driver.o
- .debug_str     0x00000000    0x7f706 ./Core/Src/max30102_driver.o
+ .debug_line    0x00000000      0x7ff ./Core/Src/max30102_driver.o
+ .debug_str     0x00000000    0x7f816 ./Core/Src/max30102_driver.o
  .comment       0x00000000       0x44 ./Core/Src/max30102_driver.o
- .debug_frame   0x00000000       0x58 ./Core/Src/max30102_driver.o
+ .debug_frame   0x00000000       0x80 ./Core/Src/max30102_driver.o
  .ARM.attributes
                 0x00000000       0x34 ./Core/Src/max30102_driver.o
  .group         0x00000000        0xc ./Core/Src/stm32f4xx_hal_msp.o

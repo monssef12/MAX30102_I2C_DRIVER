@@ -72,7 +72,7 @@ typedef struct {  // the current level of each LED
 HAL_StatusTypeDef ReadRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t Register, uint8_t *pData, uint16_t Size);
 HAL_StatusTypeDef WriteRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t Register, uint8_t *pData, uint16_t Size);
 
-HAL_StatusTypeDef SetConfiguration(MODE_CONFIG mode_configuration, SPO2_CONFIG spo2_configuration, FIFO_CONFIG fifo_configuration, LED_PULSE led_pulse);
+HAL_StatusTypeDef SetConfiguration(I2C_HandleTypeDef *hi2c, MODE_CONFIG mode_configuration, SPO2_CONFIG spo2_configuration, FIFO_CONFIG fifo_configuration, LED_PULSE led_pulse);
 
 /**/
 

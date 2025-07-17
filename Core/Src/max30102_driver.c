@@ -15,3 +15,31 @@ HAL_StatusTypeDef WriteRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, ui
 
 	return HAL_I2C_Mem_Write(hi2c, DevAddress, Register, 1, pData, Size, HAL_MAX_DELAY);
 }
+
+HAL_StatusTypeDef SetConfiguration(I2C_HandleTypeDef *hi2c, MODE_CONFIG mode_configuration, SPO2_CONFIG spo2_configuration, FIFO_CONFIG fifo_configuration, LED_PULSE led_pulse){
+
+	/*Write the mode configuration*/
+	uint8_t mode = (mode_configuration.SHDN << 7) | (mode_configuration.RESET << 6) | (mode_configuration.MODE);
+	HAL_StatusTypeDef status = WriteRegister(hi2c, (MAX30102_ADDR<<1) | 1, MODE_CONFIGURATION, &mode, 1);
+    if (status != HAL_OK) return status;
+
+	/*Write the spo2 configuration*/
+    uint8_t spo2 = (spo2_configuration.SPO2_ADC_RGE << 5) | (spo2_configuration.SPO2_SR << 2) | spo2_configuration.SPO2_SR ;
+	status = WriteRegister(hi2c, (MAX30102_ADDR<<1) | 1, SPO2_CONFIGURATION, &spo2, 1);
+    if (status != HAL_OK) return status;
+
+    /*Write the LEDs configuration*/
+    uint8_t led1_pa = led_pulse.LED1_PA;
+	status = WriteRegister(hi2c, (MAX30102_ADDR<<1) | 1, LED_PULSE_1, &led1_pa, 1);
+    if (status != HAL_OK) return status;
+    uint8_t led2_pa = led_pulse.LED2_PA;
+	status = WriteRegister(hi2c, (MAX30102_ADDR<<1) | 1, LED_PULSE_2, &led2_pa, 1);
+    if (status != HAL_OK) return status;
+
+    /*Write the FIFO configuration*/
+    uint8_t fifo_config = (fifo_configuration.SMP_AVE << 5) | (fifo_configuration.FIFO_ROLLOVER_EN << 4) | fifo_configuration.FIFO_A_FULL;
+	status = WriteRegister(hi2c, (MAX30102_ADDR<<1) | 1, SPO2_CONFIGURATION, &fifo_config, 1);
+    if (status != HAL_OK) return status;
+
+    return HAL_OK;
+}
