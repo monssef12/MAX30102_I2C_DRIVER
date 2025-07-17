@@ -10,3 +10,8 @@ HAL_StatusTypeDef ReadRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uin
 
 	return HAL_I2C_Mem_Read(hi2c, DevAddress, Register, 1, pData, Size, HAL_MAX_DELAY);
 }
+
+HAL_StatusTypeDef WriteRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t Register, uint8_t *pData, uint16_t Size){
+
+	return HAL_I2C_Mem_Write(hi2c, DevAddress, Register, 1, pData, Size, HAL_MAX_DELAY);
+}

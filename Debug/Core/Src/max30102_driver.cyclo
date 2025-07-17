@@ -1,1 +1,2 @@
 ../Core/Src/max30102_driver.c:9:19:ReadRegister	1
+../Core/Src/max30102_driver.c:14:19:WriteRegister	1

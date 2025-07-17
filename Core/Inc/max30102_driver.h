@@ -29,8 +29,8 @@
 #define FIFO_CONFIGURATION        0X08    /*The FIFO CONFIGURATION register address*/
 #define MODE_CONFIGURATION        0X09    /*The MODE CONFIGURATION register address*/
 #define SPO2_CONFIGURATION        0X0A    /*The SpO2 Configuration register address*/
-#define LED_PULSE_AMPLITUDE1      0X0C    /*The LED Pulse Amplitude register address*/
-#define LED_PULSE_AMPLITUDE2      0X0D    /*The LED Pulse Amplitude register address*/
+#define LED_PULSE_1               0X0C    /*The LED Pulse Amplitude register address*/
+#define LED_PULSE_2               0X0D    /*The LED Pulse Amplitude register address*/
 #define MULTI_LED_MODE_CONTROL    0X11    /*The Multi-LED Mode Control register address*/
 #define MULTI_LED_MODE_CONTROL    0X11    /*The Multi-LED Mode Control register address*/
 
@@ -39,9 +39,42 @@
 #define DIE_TEMPERATURE_FRACTION   0X20    /*The DIE TEMPERATURE FRACTION register address*/
 #define DIE_TEMPERATURE_CONFIG     0X20    /*The DIE TEMPERATURE CONFIG register address*/
 
-/*READ AND WRITE FUNCTIONS*/
+/*Mode Configuration structure*/
+
+typedef struct {
+	uint8_t SHDN; //  Shutdown Control
+	uint8_t RESET; // Reset Control
+	uint8_t MODE; //  Mode Control
+
+} MODE_CONFIG;
+
+typedef struct {
+	uint8_t SPO2_ADC_RGE; //SpO2 ADC Range Control
+	uint8_t SPO2_SR; //  SpO2 Sample Rate Control
+	uint8_t LED_PW; // LED Pulse Width Control and ADC Resolution
+
+} SPO2_CONFIG;
+
+typedef struct {
+	uint8_t SMP_AVE; // Sample Averaging
+	uint8_t FIFO_ROLLOVER_EN; //  FIFO Rolls on Full
+	uint8_t FIFO_A_FULL; // FIFO Almost Full Value
+
+} FIFO_CONFIG;
+
+typedef struct {  // the current level of each LED
+	uint8_t LED1_PA;
+	uint8_t LED2_PA;
+
+} LED_PULSE;
+
+/*REGISTERS READ AND WRITE FUNCTIONS*/
 HAL_StatusTypeDef ReadRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t Register, uint8_t *pData, uint16_t Size);
-HAL_StatusTypeDef WriteRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t MemAddress, uint8_t *pData);
+HAL_StatusTypeDef WriteRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t Register, uint8_t *pData, uint16_t Size);
+
+HAL_StatusTypeDef SetConfiguration(MODE_CONFIG mode_configuration, SPO2_CONFIG spo2_configuration, FIFO_CONFIG fifo_configuration, LED_PULSE led_pulse);
+
+/**/
+
 
 #endif /* INC_MAX30102_DRIVER_H_ */
-
