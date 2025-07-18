@@ -49,7 +49,7 @@ typedef struct {
 } MODE_CONFIG;
 
 typedef struct {
-	uint8_t SPO2_ADC_RGE; //SpO2 ADC Range Control
+	uint8_t SPO2_ADC_RGE; // SpO2 ADC Range Control: maximum measured current
 	uint8_t SPO2_SR; //  SpO2 Sample Rate Control
 	uint8_t LED_PW; // LED Pulse Width Control and ADC Resolution
 
@@ -68,11 +68,19 @@ typedef struct {  // the current level of each LED
 
 } LED_PULSE;
 
+typedef struct {   // Define an instance of this to store the data fetched from the sensor FIFO
+	uint32_t IR_DATA;
+	uint32_t RED_DATA;
+
+} MAX30102_DATA ;
+
+
 /*REGISTERS READ AND WRITE FUNCTIONS*/
 HAL_StatusTypeDef ReadRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t Register, uint8_t *pData, uint16_t Size);
 HAL_StatusTypeDef WriteRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t Register, uint8_t *pData, uint16_t Size);
 
-HAL_StatusTypeDef SetConfiguration(I2C_HandleTypeDef *hi2c, MODE_CONFIG mode_configuration, SPO2_CONFIG spo2_configuration, FIFO_CONFIG fifo_configuration, LED_PULSE led_pulse);
+HAL_StatusTypeDef SetConfiguration(I2C_HandleTypeDef *hi2c, MODE_CONFIG *mode_configuration, SPO2_CONFIG *spo2_configuration, FIFO_CONFIG *fifo_configuration, LED_PULSE *led_pulse);
+HAL_StatusTypeDef ReadSample(I2C_HandleTypeDef *hi2c, MAX30102_DATA *Sampled_Data, MODE_CONFIG *mode_configuration);
 
 /**/
 

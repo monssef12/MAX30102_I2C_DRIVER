@@ -21,6 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
+#include <string.h>
 
 /* USER CODE END Includes */
 
@@ -42,6 +44,8 @@
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
 
+UART_HandleTypeDef huart1;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -50,6 +54,7 @@ I2C_HandleTypeDef hi2c1;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -77,6 +82,17 @@ int main(void)
 
   /* USER CODE BEGIN Init */
 
+  // Configuration parameters
+
+  MODE_CONFIG mode_config = {0, 0, 0x011};
+  SPO2_CONFIG spo2_config = {1, 3, 4};
+  FIFO_CONFIG fifo_config = {0, 0, 0};
+  LED_PULSE led_pulse = {0x02, 0x02};
+
+  // Data buffers
+  MAX30102_DATA max30102_data = {0, 0};
+  char uart_message[64];
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -89,8 +105,13 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_I2C1_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+  uint8_t interr_en = 0;
+  WriteRegister(&hi2c1, (MAX30102_ADDR<<1) | 1, INTERRUPT_ENABLE_1, &interr_en, 1);
+  WriteRegister(&hi2c1, (MAX30102_ADDR<<1) | 1, INTERRUPT_ENABLE_2, &interr_en, 1);
 
+  SetConfiguration(&hi2c1, &mode_config, &spo2_config, &fifo_config, &led_pulse);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -100,6 +121,12 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  HAL_Delay(2);
+	  ReadSample(&hi2c1, &max30102_data, &mode_config);
+
+	  sprintf(uart_message, "IR:%lu, RED:%lu\r\n", max30102_data.IR_DATA, max30102_data.RED_DATA);
+
+	  HAL_UART_Transmit(&huart1, ( uint8_t *)uart_message, strlen(uart_message), HAL_MAX_DELAY);
   }
   /* USER CODE END 3 */
 }
@@ -112,11 +139,6 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-
-  if (HAL_RCC_DeInit() != HAL_OK)
-  {
-    Error_Handler();
-  }
 
   /** Configure the main internal regulator output voltage
   */
@@ -185,6 +207,39 @@ static void MX_I2C1_Init(void)
 }
 
 /**
+  * @brief USART1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART1_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART1_Init 0 */
+
+  /* USER CODE END USART1_Init 0 */
+
+  /* USER CODE BEGIN USART1_Init 1 */
+
+  /* USER CODE END USART1_Init 1 */
+  huart1.Instance = USART1;
+  huart1.Init.BaudRate = 115200;
+  huart1.Init.WordLength = UART_WORDLENGTH_8B;
+  huart1.Init.StopBits = UART_STOPBITS_1;
+  huart1.Init.Parity = UART_PARITY_NONE;
+  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART1_Init 2 */
+
+  /* USER CODE END USART1_Init 2 */
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -196,6 +251,7 @@ static void MX_GPIO_Init(void)
   /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
