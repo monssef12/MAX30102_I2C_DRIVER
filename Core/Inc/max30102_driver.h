@@ -40,7 +40,6 @@
 #define DIE_TEMPERATURE_CONFIG     0X20    /*The DIE TEMPERATURE CONFIG register address*/
 
 /*Mode Configuration structure*/
-
 typedef struct {
 	uint8_t SHDN; //  Shutdown Control
 	uint8_t RESET; // Reset Control
@@ -48,6 +47,7 @@ typedef struct {
 
 } MODE_CONFIG;
 
+/*SPO2 Configuration structure*/
 typedef struct {
 	uint8_t SPO2_ADC_RGE; // SpO2 ADC Range Control: maximum measured current
 	uint8_t SPO2_SR; //  SpO2 Sample Rate Control
@@ -55,6 +55,7 @@ typedef struct {
 
 } SPO2_CONFIG;
 
+/*FIFO Configuration structure*/
 typedef struct {
 	uint8_t SMP_AVE; // Sample Averaging
 	uint8_t FIFO_ROLLOVER_EN; //  FIFO Rolls on Full
@@ -62,12 +63,15 @@ typedef struct {
 
 } FIFO_CONFIG;
 
+
+/*LEDs Configuration structure*/
 typedef struct {  // the current level of each LED
 	uint8_t LED1_PA;
 	uint8_t LED2_PA;
-
 } LED_PULSE;
 
+
+/*DATA structure for the sensor readings*/
 typedef struct {   // Define an instance of this to store the data fetched from the sensor FIFO
 	uint32_t IR_DATA;
 	uint32_t RED_DATA;
@@ -75,13 +79,31 @@ typedef struct {   // Define an instance of this to store the data fetched from 
 } MAX30102_DATA ;
 
 
+
+/*TEMPERATURE DATA STRUCTURE*/
+
+/*
+ * final temp data =>  float Tem = float(TEMP_INTEGER) + 0.0625*TEMP_FRACTION in degree celisius
+ */
+typedef struct {
+	uint8_t TEMP_INTEGER;
+	uint8_t TEMP_FRACTION;
+
+} TEMPERATURE_DATA;
+
+
+
 /*REGISTERS READ AND WRITE FUNCTIONS*/
 HAL_StatusTypeDef ReadRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t Register, uint8_t *pData, uint16_t Size);
 HAL_StatusTypeDef WriteRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t Register, uint8_t *pData, uint16_t Size);
 
+/*Configuration and Reading of the sensor */
 HAL_StatusTypeDef SetConfiguration(I2C_HandleTypeDef *hi2c, MODE_CONFIG *mode_configuration, SPO2_CONFIG *spo2_configuration, FIFO_CONFIG *fifo_configuration, LED_PULSE *led_pulse);
 HAL_StatusTypeDef ReadSample(I2C_HandleTypeDef *hi2c, MAX30102_DATA *Sampled_Data, MODE_CONFIG *mode_configuration);
 
+/*The temperature ADC config and reading*/
+HAL_StatusTypeDef EnableTemperature(I2C_HandleTypeDef *hi2c);
+HAL_StatusTypeDef ReadTemperature(I2C_HandleTypeDef *hi2c, TEMPERATURE_DATA *temperature_data);
 /**/
 
 

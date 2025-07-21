@@ -52,6 +52,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 MAX30102.list \
 
+OBJCOPY_BIN += \
+MAX30102.bin \
+
 
 # All Target
 all: main-build
@@ -75,12 +78,17 @@ MAX30102.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+MAX30102.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "MAX30102.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) MAX30102.elf MAX30102.list MAX30102.map default.size.stdout
+	-$(RM) MAX30102.bin MAX30102.elf MAX30102.list MAX30102.map default.size.stdout
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'

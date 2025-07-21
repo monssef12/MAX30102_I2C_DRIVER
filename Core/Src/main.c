@@ -107,12 +107,15 @@ int main(void)
   MX_I2C1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+
+  // clear the interrupts enable registers to not activate interrupts
   uint8_t interr_en = 0;
   WriteRegister(&hi2c1, (MAX30102_ADDR<<1) | 1, INTERRUPT_ENABLE_1, &interr_en, 1);
   WriteRegister(&hi2c1, (MAX30102_ADDR<<1) | 1, INTERRUPT_ENABLE_2, &interr_en, 1);
 
   SetConfiguration(&hi2c1, &mode_config, &spo2_config, &fifo_config, &led_pulse);
   /* USER CODE END 2 */
+  HAL_UART_Transmit(&huart1, (uint8_t *)"TEST\r\n", 6, HAL_MAX_DELAY);
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */

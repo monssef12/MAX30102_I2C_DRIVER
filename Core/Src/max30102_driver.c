@@ -41,6 +41,11 @@ HAL_StatusTypeDef SetConfiguration(I2C_HandleTypeDef *hi2c, MODE_CONFIG *mode_co
 	status = WriteRegister(hi2c, (MAX30102_ADDR<<1) , SPO2_CONFIGURATION, &fifo_config, 1);
     if (status != HAL_OK) return status;
 
+    /*clear the read and the write pointers to avoid reading old data*/
+    uint8_t RESET = 0;
+    WriteRegister(hi2c, (MAX30102_ADDR<<1) , FIFO_READ_PTR, &RESET, 1);
+    WriteRegister(hi2c, (MAX30102_ADDR<<1) , FIFO_WRITE_PTR, &RESET, 1);
+
     return HAL_OK;
 }
 
@@ -88,3 +93,23 @@ HAL_StatusTypeDef ReadSample(I2C_HandleTypeDef *hi2c, MAX30102_DATA *Sampled_Dat
 	return HAL_OK;
 }
 
+HAL_StatusTypeDef EnableTemperature(I2C_HandleTypeDef *hi2c){
+	uint8_t Set = 1;
+	HAL_StatusTypeDef status = WriteRegister(hi2c, (MAX30102_ADDR<<1) , DIE_TEMPERATURE_CONFIG, &Set, 1); // Enable the temperature conversion
+	return status;
+}
+
+HAL_StatusTypeDef ReadTemperature(I2C_HandleTypeDef *hi2c, TEMPERATURE_DATA *temperature_data){
+	uint8_t Temp_Ready;
+	HAL_StatusTypeDef status = ReadRegister(hi2c, (MAX30102_ADDR<<1) , DIE_TEMPERATURE_INTEGER, &Temp_Ready, 1);
+
+    if (status != HAL_OK) return status;
+    if (Temp_Ready == 0){
+    	HAL_StatusTypeDef status = ReadRegister(hi2c, (MAX30102_ADDR<<1) , DIE_TEMPERATURE_INTEGER, &(temperature_data->TEMP_INTEGER), 1);
+        if (status != HAL_OK) return status;
+
+    	status = ReadRegister(hi2c, (MAX30102_ADDR<<1) , DIE_TEMPERATURE_FRACTION, &(temperature_data->TEMP_FRACTION), 1);
+        if (status != HAL_OK) return status;
+    }
+    return HAL_OK;
+}
