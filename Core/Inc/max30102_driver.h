@@ -98,13 +98,21 @@ HAL_StatusTypeDef ReadRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uin
 HAL_StatusTypeDef WriteRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t Register, uint8_t *pData, uint16_t Size);
 
 /*Configuration and Reading of the sensor */
-HAL_StatusTypeDef SetConfiguration(I2C_HandleTypeDef *hi2c, MODE_CONFIG *mode_configuration, SPO2_CONFIG *spo2_configuration, FIFO_CONFIG *fifo_configuration, LED_PULSE *led_pulse);
+HAL_StatusTypeDef SetModeConfiguration(I2C_HandleTypeDef *hi2c, MODE_CONFIG *mode_configuration);
+HAL_StatusTypeDef SetSpO2Configuration(I2C_HandleTypeDef *hi2c, SPO2_CONFIG *spo2_configuration);
+HAL_StatusTypeDef SetLEDPulseAmplitude(I2C_HandleTypeDef *hi2c, LED_PULSE *led_pulse);
+HAL_StatusTypeDef SetFIFOConfiguration(I2C_HandleTypeDef *hi2c, FIFO_CONFIG *fifo_configuration);
+HAL_StatusTypeDef ResetFIFOPointers(I2C_HandleTypeDef *hi2c);
+
+
 HAL_StatusTypeDef ReadSample(I2C_HandleTypeDef *hi2c, MAX30102_DATA *Sampled_Data, MODE_CONFIG *mode_configuration);
 
 /*The temperature ADC config and reading*/
 HAL_StatusTypeDef EnableTemperature(I2C_HandleTypeDef *hi2c);
 HAL_StatusTypeDef ReadTemperature(I2C_HandleTypeDef *hi2c, TEMPERATURE_DATA *temperature_data);
-/**/
 
+/*GetTemperature function*/
+
+float GetTemperature(uint8_t TEMP_INTEGER, uint8_t TEMP_FRACTION);
 
 #endif /* INC_MAX30102_DRIVER_H_ */
